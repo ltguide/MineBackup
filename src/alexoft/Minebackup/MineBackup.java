@@ -99,7 +99,7 @@ public class MineBackup extends JavaPlugin {
         Calendar today = Calendar.getInstance();
     	Map<String, String> formats = new HashMap<String, String>();
     	formats.put("%Y", format(today.get(Calendar.YEAR)));
-    	formats.put("%M", format(today.get(Calendar.MONTH)));
+    	formats.put("%M", format(today.get(Calendar.MONTH) + 1));
     	formats.put("%D", format(today.get(Calendar.DAY_OF_MONTH)));
     	formats.put("%H", format(today.get(Calendar.HOUR_OF_DAY)));
     	formats.put("%m", format(today.get(Calendar.MINUTE)));
