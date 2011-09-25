@@ -1,4 +1,3 @@
-
 package alexoft.Minebackup;
 
 
@@ -146,13 +145,13 @@ public class MineBackup extends JavaPlugin {
 
     public class LogFilter implements Filter {
         String LS1 = "Disabling level saving..";
-        String LS2 = "ConsoleCommandSender: Disabling level saving..";
+        String LS2 = "CONSOLE: Disabling level saving..";
         String LS3 = "Enabling level saving..";
-        String LS4 = "ConsoleCommandSender: Enabling level saving..";
+        String LS4 = "CONSOLE: Enabling level saving..";
         String LS5 = "Forcing save..";
-        String LS6 = "ConsoleCommandSender: Forcing save..";
+        String LS6 = "CONSOLE: Forcing save..";
         String LS7 = "Save complete.";
-        String LS8 = "ConsoleCommandSender: Save complete.";
+        String LS8 = "CONSOLE: Save complete.";
 
         @Override
         public boolean isLoggable(LogRecord record) {
