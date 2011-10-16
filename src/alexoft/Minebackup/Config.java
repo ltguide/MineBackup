@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.zip.Deflater;
 import java.util.zip.ZipOutputStream;
 
@@ -14,9 +13,8 @@ import org.bukkit.World;
 import org.bukkit.util.config.Configuration;
 
 public class Config {
-	private MineBackup plugin;
+	private final MineBackup plugin;
 	private Configuration cfg;
-	public boolean isBackupDelayed;
 	
 	public Config(MineBackup plugin) {
 		this.plugin = plugin;
@@ -51,7 +49,7 @@ public class Config {
 
 	public void loadConfig() {
 		try {
-			this.plugin.log("Loading configuration...");
+			plugin.sendLog("Loading configuration...");
 			boolean rewrite = false;
 			String[] allowedKeys = new String[] { "worlds",
 
@@ -65,7 +63,7 @@ public class Config {
 
 			"compression.enabled", "compression.level", "compression.mode" };
 			
-			cfg = new Configuration(new File(this.plugin.getDataFolder() + "/config.yml"));
+			cfg = new Configuration(new File(plugin.getDataFolder() + "/config.yml"));
 			cfg.load();
 			
 			worlds = cfg.getStringList("worlds", new ArrayList<String>());
@@ -105,7 +103,7 @@ public class Config {
 			}
 			if (i > 0) {
 				rewrite = true;
-				this.plugin.log("Removed " + i + " unknown key(s)");
+				plugin.sendLog("Removed " + i + " unknown key(s)");
 			}
 			
 			if (compressionEnabled) {
@@ -135,7 +133,7 @@ public class Config {
 				}
 			}
 			if (worlds.isEmpty()) {
-				for (World w : this.plugin.getServer().getWorlds()) {
+				for (World w : plugin.getServer().getWorlds()) {
 					worlds.add(w.getName());
 				}
 				cfg.setProperty("worlds", worlds);
@@ -165,16 +163,16 @@ public class Config {
 			if (rewrite) {
 				String headerText = "# available worlds :\r\n";
 				
-				for (World w : this.plugin.getServer().getWorlds()) {
+				for (World w : plugin.getServer().getWorlds()) {
 					headerText += "# - " + w.getName() + "\r\n";
 				}
 				cfg.setHeader(headerText);
 				cfg.save();
 			}
-			this.plugin.log(Level.INFO, worlds.size() + " worlds loaded.");
+			plugin.sendLog(worlds.size() + " worlds loaded.");
 		}
 		catch (Exception e) {
-			this.plugin.logException(e, "Error while loading config");
+			plugin.logException(e, "Error while loading config");
 		}
 	}
 }

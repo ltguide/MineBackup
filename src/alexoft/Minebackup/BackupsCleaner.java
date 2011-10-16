@@ -26,16 +26,16 @@ public class BackupsCleaner extends Thread {
 		long now = System.currentTimeMillis();
 		long diffDays;
 		int bckDeleted = 0;
-		for (File f : recursiveListFiles(new File(this.plugin.config.bckDir))) {
-			if (f.toString() != this.plugin.config.bckDir) {
+		for (File f : recursiveListFiles(new File(plugin.config.bckDir))) {
+			if (f.toString() != plugin.config.bckDir) {
 				diffDays = getDifference(f.lastModified(), now, TimeUnit.DAYS);
-				if (this.plugin.config.debug) this.plugin.log(f + " : " + diffDays + " days");
-				if (diffDays > this.plugin.config.daystokeep) {
+				if (plugin.config.debug) plugin.sendLog(f + " : " + diffDays + " days");
+				if (diffDays > plugin.config.daystokeep) {
 					if (alexoft.Minebackup.DirUtils.delete(f)) {
-						this.plugin.log(" + deleted " + f + " due to age limitation (" + diffDays + " day(s))");
+						plugin.sendLog(" + deleted " + f + " due to age limitation (" + diffDays + " day(s))");
 					}
 					else {
-						this.plugin.log("Cannot delete " + f + " !");
+						plugin.sendLog("Cannot delete " + f + " !");
 					}
 					bckDeleted += 1;
 				}
@@ -43,12 +43,12 @@ public class BackupsCleaner extends Thread {
 		}
 		for (int i = 0; i < 3; i++)
 			//remove empty directories
-			for (File f : recursiveListDir(new File(this.plugin.config.bckDir))) {
+			for (File f : recursiveListDir(new File(plugin.config.bckDir))) {
 				if (f.list().length == 0) {
 					f.delete();
 				}
 			}
-		this.plugin.log(Level.INFO, " + " + bckDeleted + " backup(s) deleted");
+		plugin.sendLog(" + " + bckDeleted + " backup(s) deleted");
 	}
 	
 	private List<File> recursiveListFiles(File path) {
@@ -61,7 +61,7 @@ public class BackupsCleaner extends Thread {
 				}
 			}
 			else {
-				this.plugin.log(Level.WARNING, "Cannot acces to " + path);
+				plugin.sendLog(Level.WARNING, "Cannot acces to " + path);
 			}
 		}
 		else {
@@ -81,7 +81,7 @@ public class BackupsCleaner extends Thread {
 				}
 			}
 			else {
-				this.plugin.log(Level.WARNING, "Cannot acces to " + path);
+				plugin.sendLog(Level.WARNING, "Cannot acces to " + path);
 			}
 		}
 		return o;
