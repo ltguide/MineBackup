@@ -20,7 +20,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class MineBackup extends JavaPlugin {
 	public Config config;
 	private final Logger log = Logger.getLogger("Minecraft");
-	private final String name = getDescription().getName();
 	
 	public boolean isBackupStarted;
 	public boolean isDirty;
@@ -40,7 +39,7 @@ public class MineBackup extends JavaPlugin {
 		getServer().getPluginCommand("mbck").setExecutor(new MineBackupCommandListener(this));
 		getServer().getPluginManager().registerEvent(Event.Type.PLAYER_QUIT, new MineBackupPlayerListener(this), Priority.Monitor, this);
 		
-		sendLog("v" + getDescription().getVersion() + " enabled (ThisIsAreku; unofficially build by ltguide)");
+		sendLog("v" + getDescription().getVersion() + " enabled (by ThisIsAreku; unofficial build by ltguide)");
 	}
 	
 	public void resetSchedule() {
@@ -89,7 +88,7 @@ public class MineBackup extends JavaPlugin {
 	}
 	
 	public void sendLog(Level level, String msg) {
-		log.log(level, "[" + name + "] " + ChatColor.stripColor(msg));
+		log.log(level, "[" + getDescription().getName() + "] " + ChatColor.stripColor(msg));
 	}
 	
 	public void logException(Throwable e, String debugText) {

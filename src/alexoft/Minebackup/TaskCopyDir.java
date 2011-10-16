@@ -21,7 +21,6 @@ public class TaskCopyDir extends Thread {
 	
 	@Override
 	public void run() {
-		
 		try {
 			new File(this.destDir).mkdirs();
 			alexoft.Minebackup.DirUtils.copyDirectory(this.srcDir, this.destDir);
@@ -32,5 +31,4 @@ public class TaskCopyDir extends Thread {
 			new File(this.destDir).delete();
 		}
 	}
-	
 }

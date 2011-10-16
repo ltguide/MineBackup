@@ -21,7 +21,6 @@ public class TaskZipDir extends Thread {
 	
 	@Override
 	public void run() {
-		
 		try {
 			new File(destDir).createNewFile();
 			alexoft.Minebackup.ZipUtils.zipDir(srcDir, destDir, plugin.config.compressionMode, plugin.config.compressionLevel);
@@ -32,5 +31,4 @@ public class TaskZipDir extends Thread {
 			plugin.logException(ex, destDir);
 		}
 	}
-	
 }

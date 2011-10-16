@@ -24,5 +24,4 @@ public class MineBackupCommandListener implements CommandExecutor {
 		plugin.executeBackup(sender.getName());
 		return true;
 	}
-	
 }

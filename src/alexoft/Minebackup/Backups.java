@@ -18,19 +18,9 @@ public class Backups extends Thread {
 		this.userStarted = userName;
 	}
 	
-	public void MakeBackup() {
-		plugin.sendLog("Starting backup...");
-		for (String w : plugin.config.worlds) {
-			World world = plugin.getServer().getWorld(w);
-			
-			if (world == null) plugin.sendLog("world '" + w + "' not found.. check your config file");
-			else MakeBackup(world);
-		}
-	}
-	
 	public void MakeBackup(World world) {
 		try {
-			plugin.sendLog(" * " + world);
+			plugin.sendLog(" * " + world.getName());
 			
 			//if (plugin.config.compressionEnabled) {
 			File tempDir = new File(plugin.config.bckTempDir, String.valueOf(Math.random()));
@@ -72,18 +62,9 @@ public class Backups extends Thread {
 		}
 	}
 	
-	private void worldsSetAutoSave(boolean save) {
-		for (World world : Bukkit.getWorlds())
-			world.setAutoSave(true);
-	}
-	
-	private void worldsSave() {
-		for (World world : Bukkit.getWorlds())
-			world.save();
-	}
-	
-	private void SendMessage(String m) {
-		if (plugin.config.msg_enable) plugin.getServer().broadcastMessage(m);
+	private void SendMessage(String msg) {
+		if (plugin.config.msg_enable) plugin.getServer().broadcastMessage(msg);
+		else plugin.sendLog(msg);
 	}
 	
 	@Override
@@ -91,10 +72,6 @@ public class Backups extends Thread {
 		if (plugin.isBackupStarted || (!plugin.isDirty && plugin.getServer().getOnlinePlayers().length == 0)) return;
 		
 		plugin.isDirty = false;
-		preBackup();
-	}
-	
-	private void preBackup() {
 		plugin.isBackupStarted = true;
 		if (!"".equals(userStarted)) SendMessage(plugin.config.msg_BackupStartedUser.replaceAll("%player%", userStarted));
 		else SendMessage(plugin.config.msg_BackupStarted);
@@ -103,16 +80,22 @@ public class Backups extends Thread {
 		Bukkit.savePlayers();
 		worldsSave();
 		
-		MakeBackup();
+		for (World world : Bukkit.getWorlds())
+			if (plugin.config.worlds.contains(world.getName())) MakeBackup(world);
 		
-		postBackup();
-	}
-	
-	public void postBackup() {
-		plugin.sendLog("Done!");
 		worldsSetAutoSave(true);
 		
 		SendMessage(plugin.config.msg_BackupEnded);
 		plugin.isBackupStarted = false;
+	}
+	
+	private void worldsSetAutoSave(boolean save) {
+		for (World world : Bukkit.getWorlds())
+			world.setAutoSave(true);
+	}
+	
+	private void worldsSave() {
+		for (World world : Bukkit.getWorlds())
+			world.save();
 	}
 }

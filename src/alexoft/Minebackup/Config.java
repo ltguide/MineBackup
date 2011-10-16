@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.util.config.Configuration;
 
+@SuppressWarnings("deprecation")
 public class Config {
 	private final MineBackup plugin;
 	private Configuration cfg;
@@ -32,7 +33,6 @@ public class Config {
 	public long firstDelay;
 	public long daystokeep;
 	
-	public boolean pauseWhenNoPlayers;
 	public boolean backupPlugins;
 	public boolean debug;
 	
@@ -57,7 +57,7 @@ public class Config {
 
 			"time.interval", "time.delay", "time.days-to-keep",
 
-			"options.pause-when-no-players", "options.backup-plugins", "options.debug",
+			"options.backup-plugins", "options.debug",
 
 			"messages.backup-started", "messages.backup-started-user", "messages.backup-ended", "messages.enabled",
 
@@ -77,7 +77,6 @@ public class Config {
 			daystokeep = cfg.getInt("time.days-to-keep", -1);
 			
 			debug = cfg.getBoolean("options.debug", false);
-			pauseWhenNoPlayers = cfg.getBoolean("options.pause-when-no-players", true);
 			backupPlugins = cfg.getBoolean("options.backup-plugins", true);
 			
 			msg_enable = cfg.getBoolean("messages.enabled", true);
