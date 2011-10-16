@@ -1,11 +1,12 @@
 name: MineBackup
 main: alexoft.Minebackup.MineBackup
-author: ThisIsAreku
+authors: [ThisIsAreku,ltguide]
 version: 0.4.8.4
 description: Automatically backup your worlds
 commands:
-    mbck:
+    minebackup:
         description: Manually start backup process
+        aliases: [mbck,backup]
         usage: /mbck
 permissions:
     minebackup.*:

@@ -1,15 +1,8 @@
-/**
- * 
- */
 package alexoft.Minebackup;
 
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-/**
- * @author Alexandre
- * 
- */
 public class MineBackupPlayerListener extends PlayerListener {
 	private final MineBackup plugin;
 	

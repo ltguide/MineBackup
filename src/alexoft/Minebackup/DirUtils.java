@@ -8,73 +8,40 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/**
- * 
- * @author Alexandre
- */
 public class DirUtils {
-	static public boolean deleteDirectory(File path) {
-		boolean resultat = true;
-		
-		if (path.exists()) {
-			File[] files = path.listFiles();
-			
-			for (int i = 0; i < files.length; i++) {
-				if (files[i].isDirectory()) {
-					resultat &= deleteDirectory(files[i]);
-				}
-				else {
-					resultat &= files[i].delete();
-				}
-			}
+	
+	public static void deleteDirectory(File tarDir) {
+		if (tarDir.isDirectory()) {
+			for (File child : tarDir.listFiles())
+				deleteDirectory(child);
 		}
-		resultat &= path.delete();
-		return (resultat);
+		
+		tarDir.delete();
 	}
 	
-	static public boolean delete(File path) {
-		boolean resultat = true;
+	public static void copyDirectory(File srcDir, File destDir) throws FileNotFoundException, IOException {
+		destDir.mkdirs();
 		
-		if (path.exists()) {
-			if (path.isDirectory()) {
-				deleteDirectory(path);
-			}
+		for (String child : srcDir.list()) {
+			File srcFile = new File(srcDir, child);
+			if (srcFile.isDirectory()) copyDirectory(srcFile, new File(destDir, child));
+			else copyFile(srcFile, new File(destDir, child));
 		}
-		resultat &= path.delete();
-		return (resultat);
 	}
 	
-	public static void copyDirectory(File sourceLocation, File targetLocation) throws FileNotFoundException, IOException {
-		
-		if (sourceLocation.isDirectory()) {
-			if (!targetLocation.exists()) {
-				targetLocation.mkdir();
-			}
-			
-			String[] children = sourceLocation.list();
-			
-			for (int i = 0; i < children.length; i++) {
-				copyDirectory(new File(sourceLocation, children[i]), new File(targetLocation, children[i]));
-			}
-		}
-		else {
-			InputStream in = new FileInputStream(sourceLocation);
-			OutputStream out = new FileOutputStream(targetLocation);
-			
-			// Copy the bits from instream to outstream
+	public static void copyFile(File srcFile, File destFile) throws FileNotFoundException, IOException {
+		InputStream inStream = new FileInputStream(srcFile);
+		OutputStream outStream = new FileOutputStream(destFile);
+		try {
 			byte[] buf = new byte[1024];
 			int len;
 			
-			while ((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			in.close();
-			out.close();
+			while ((len = inStream.read(buf)) > -1)
+				if (len > 0) outStream.write(buf, 0, len);
 		}
-	}
-	
-	public static void copyDirectory(String srcDir, String destDir) throws FileNotFoundException, IOException {
-		// TODO Auto-generated method stub
-		copyDirectory(new File(srcDir), new File(destDir));
+		finally {
+			inStream.close();
+			outStream.close();
+		}
 	}
 }

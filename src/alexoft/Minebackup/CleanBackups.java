@@ -10,10 +10,10 @@ import java.util.logging.Level;
  * 
  * @author Alexandre
  */
-public class BackupsCleaner extends Thread {
-	private MineBackup plugin;
+public class CleanBackups {
+	private final MineBackup plugin;
 	
-	public BackupsCleaner(MineBackup plugin) {
+	public CleanBackups(MineBackup plugin) {
 		this.plugin = plugin;
 	}
 	
@@ -21,8 +21,7 @@ public class BackupsCleaner extends Thread {
 		return units.convert(b - a, TimeUnit.MILLISECONDS);
 	}
 	
-	@Override
-	public void run() {
+	public void clean() {
 		long now = System.currentTimeMillis();
 		long diffDays;
 		int bckDeleted = 0;
@@ -31,23 +30,18 @@ public class BackupsCleaner extends Thread {
 				diffDays = getDifference(f.lastModified(), now, TimeUnit.DAYS);
 				if (plugin.config.debug) plugin.sendLog(f + " : " + diffDays + " days");
 				if (diffDays > plugin.config.daystokeep) {
-					if (alexoft.Minebackup.DirUtils.delete(f)) {
-						plugin.sendLog(" + deleted " + f + " due to age limitation (" + diffDays + " day(s))");
-					}
-					else {
-						plugin.sendLog("Cannot delete " + f + " !");
-					}
+					if (f.delete()) plugin.sendLog(" + deleted " + f + " due to age limitation (" + diffDays + " day(s))");
+					else plugin.sendLog("Cannot delete " + f + " !");
+					
 					bckDeleted += 1;
 				}
 			}
 		}
 		for (int i = 0; i < 3; i++)
 			//remove empty directories
-			for (File f : recursiveListDir(new File(plugin.config.bckDir))) {
-				if (f.list().length == 0) {
-					f.delete();
-				}
-			}
+			for (File f : recursiveListDir(new File(plugin.config.bckDir)))
+				if (f.list().length == 0) f.delete();
+		
 		plugin.sendLog(" + " + bckDeleted + " backup(s) deleted");
 	}
 	
@@ -56,17 +50,13 @@ public class BackupsCleaner extends Thread {
 		if (path.isDirectory()) {
 			File[] list = path.listFiles();
 			if (list != null) {
-				for (int i = 0; i < list.length; i++) {
+				for (int i = 0; i < list.length; i++)
 					o.addAll(recursiveListFiles(list[i]));
-				}
 			}
-			else {
-				plugin.sendLog(Level.WARNING, "Cannot acces to " + path);
-			}
+			else plugin.sendLog(Level.WARNING, "Cannot acces to " + path);
 		}
-		else {
-			o.add(path);
-		}
+		else o.add(path);
+		
 		return o;
 	}
 	
@@ -76,13 +66,10 @@ public class BackupsCleaner extends Thread {
 			o.add(path);
 			File[] list = path.listFiles();
 			if (list != null) {
-				for (int i = 0; i < list.length; i++) {
+				for (int i = 0; i < list.length; i++)
 					o.addAll(recursiveListDir(list[i]));
-				}
 			}
-			else {
-				plugin.sendLog(Level.WARNING, "Cannot acces to " + path);
-			}
+			else plugin.sendLog(Level.WARNING, "Cannot acces to " + path);
 		}
 		return o;
 	}
