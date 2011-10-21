@@ -1,21 +1,17 @@
 package alexoft.Minebackup;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.zip.Deflater;
 import java.util.zip.ZipOutputStream;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.util.config.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
 
-@SuppressWarnings("deprecation")
 public class Config {
 	private final MineBackup plugin;
-	private Configuration cfg;
+	private FileConfiguration cfg;
 	
 	public Config(MineBackup plugin) {
 		this.plugin = plugin;
@@ -47,26 +43,15 @@ public class Config {
 	
 	/* end configuration fields */
 
-	public void loadConfig() {
+	@SuppressWarnings("unchecked") //prevents warning about worlds being an unchecked conversion, line 54
+  public void loadConfig() {
 		try {
 			plugin.sendLog("Loading configuration...");
 			boolean rewrite = false;
-			String[] allowedKeys = new String[] { "worlds",
-
-			"backup.dir", "backup.temp-dir", "backup.format",
-
-			"time.interval", "time.delay", "time.days-to-keep",
-
-			"options.backup-plugins", "options.debug",
-
-			"messages.backup-started", "messages.backup-started-user", "messages.backup-ended", "messages.enabled",
-
-			"compression.enabled", "compression.level", "compression.mode" };
 			
-			cfg = new Configuration(new File(plugin.getDataFolder() + "/config.yml"));
-			cfg.load();
+			cfg = this.plugin.getConfig();
 			
-			worlds = cfg.getStringList("worlds", new ArrayList<String>());
+			worlds = cfg.getList("worlds", new ArrayList<String>());
 			
 			bckDir = cfg.getString("backup.dir", "minebackup");
 			bckTempDir = cfg.getString("backup.temp-dir", "minebackup_temp");
@@ -91,24 +76,10 @@ public class Config {
 			compressionLevel = Deflater.BEST_COMPRESSION;
 			compressionMode = ZipOutputStream.DEFLATED;
 			
-			int i = 0;
-			String key;
-			for (Entry<String, Object> entry : cfg.getAll().entrySet()) {
-				key = entry.getKey();
-				if (!Arrays.asList(allowedKeys).contains(key)) {
-					cfg.removeProperty(key);
-					i++;
-				}
-			}
-			if (i > 0) {
-				rewrite = true;
-				plugin.sendLog("Removed " + i + " unknown key(s)");
-			}
-			
 			if (compressionEnabled) {
 				if (s_compressionLevel == null) {
 					s_compressionLevel = "BEST_COMPRESSION";
-					cfg.setProperty("compression.level", s_compressionLevel);
+					cfg.set("compression.level", s_compressionLevel);
 					rewrite = true;
 				}
 				else {
@@ -125,7 +96,7 @@ public class Config {
 				
 				if (s_compressionMode == null) {
 					s_compressionMode = "DEFLATED";
-					cfg.setProperty("compression.mode", s_compressionMode);
+					cfg.set("compression.mode", s_compressionMode);
 					rewrite = true;
 				}
 				else {// TODO: compressionMethod
@@ -135,38 +106,32 @@ public class Config {
 				for (World w : plugin.getServer().getWorlds()) {
 					worlds.add(w.getName());
 				}
-				cfg.setProperty("worlds", worlds);
+				cfg.set("worlds", worlds);
 				rewrite = true;
 			}
 			
 			if (interval <= 0) {
 				interval = 3600;
-				cfg.setProperty("time.interval", interval);
+				cfg.set("time.interval", interval);
 				rewrite = true;
 			}
 			
 			if (firstDelay < 0) {
 				firstDelay = 10;
-				cfg.setProperty("time.delay", firstDelay);
+				cfg.set("time.delay", firstDelay);
 				rewrite = true;
 			}
 			
 			if (daystokeep < 0) {
 				daystokeep = 5;
-				cfg.setProperty("time.days-to-keep", firstDelay);
+				cfg.set("time.days-to-keep", firstDelay);
 				rewrite = true;
 			}
 			
 			interval *= 20;
 			firstDelay *= 20;
 			if (rewrite) {
-				String headerText = "# available worlds :\r\n";
-				
-				for (World w : plugin.getServer().getWorlds()) {
-					headerText += "# - " + w.getName() + "\r\n";
-				}
-				cfg.setHeader(headerText);
-				cfg.save();
+				this.plugin.saveConfig();
 			}
 			plugin.sendLog(worlds.size() + " worlds loaded.");
 		}
