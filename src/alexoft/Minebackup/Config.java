@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.zip.Deflater;
 import java.util.zip.ZipOutputStream;
 
@@ -103,6 +104,8 @@ public class Config {
             dropboxEnabled = cfg.getBoolean("dropbox.enabled", false);
             dropboxKey = cfg.getString("dropbox.key",null);
             dropboxSecret = cfg.getString("dropbox.secret",null);
+            dropboxAppKey = cfg.getString("dropbox.appkey",null);
+            dropboxAppSecret = cfg.getString("dropbox.appsecret",null);
 			
 			int i = 0;
 			String key;
@@ -180,8 +183,12 @@ public class Config {
                     rewrite = true;
                 }
             }else{
-                plugin.dropbox = new DropBox(plugin);
-                plugin.dropbox.initialize(dropboxKey,dropboxSecret);
+                if(dropboxAppKey == null || dropboxAppSecret == null){
+                    this.dropboxEnabled = false;
+                    plugin.sendLog(Level.WARNING,"Couldn't find app key/secret");
+                }else{
+                    plugin.dropbox = new DropBox(plugin);
+                }
             }
 
             interval *= 20;

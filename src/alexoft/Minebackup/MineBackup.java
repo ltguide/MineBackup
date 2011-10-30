@@ -29,6 +29,9 @@ public class MineBackup extends JavaPlugin {
 		isBackupStarted = false;
 		isDirty = true;
 		shouldCleanBackups = true;
+
+
+        dropbox.initialize(config.dropboxKey,config.dropboxSecret);
 		
 		getServer().getScheduler().scheduleAsyncRepeatingTask(this, new TaskBackups(this), config.firstDelay, config.interval);
 		

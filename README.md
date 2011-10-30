@@ -5,9 +5,21 @@ MineBackup
 
 Dropbox Support:
 
+Go to https://www.dropbox.com/developers/reference/sdk
+
+Download the Java SDK. Extract the files to the same folder as your craftbukkit.jar and minecraft_server.jar
+
 Go to https://www.dropbox.com/developers/apps and create an app.
 
 Give it a Unique name (i.e. "<my name>'s dropbox backup"), select "App Folder" and click "Create".
+
+IMPORTANT!
+You need to include the new files in the classpath. the easiest way to do this is by running bukkit using the following:
+
+Windows:
+java  -classpath ".;.\*" org.bukkit.craftbukkit.Main
+Linuz/Mac:
+java  -classpath ".;./*" org.bukkit.craftbukkit.Main
 
 Start up the server with the plugin installed, then shut it down. Open the plugins/MineBackup/config.yml file, and add the key and secret obtained from the last step and put them into 
 

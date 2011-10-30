@@ -44,6 +44,7 @@ public class DropBox {
 
     public boolean initialize(String key, String secret) {
         // And later in some initialization function:
+
         appKeys = new AppKeyPair(plugin.config.dropboxAppKey, plugin.config.dropboxAppSecret);
 
         if((key == null || secret == null || key.equalsIgnoreCase(""))||(secret.equalsIgnoreCase(""))){
@@ -55,6 +56,7 @@ public class DropBox {
                 plugin.sendLog(Level.SEVERE, "Please visit : " + info.url.toString() + " to log into dropbox");
                 atp = mDBApi.getSession().getAccessTokenPair();
             } catch (DropboxException e) {
+                e.printStackTrace();
                 return false;
             }
         }else{
