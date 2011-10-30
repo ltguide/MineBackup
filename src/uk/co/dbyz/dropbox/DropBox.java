@@ -21,7 +21,14 @@ import java.util.logging.Level;
  * To change this template use File | Settings | File Templates.
  */
 public class DropBox {
+<<<<<<< HEAD
         final static private Session.AccessType ACCESS_TYPE = Session.AccessType.APP_FOLDER;
+=======
+    final static private String APP_KEY = "lmhbxw93fa8qe4v";
+    final static private String APP_SECRET = "vvnrixxzsd5kcum";
+
+    final static private Session.AccessType ACCESS_TYPE = Session.AccessType.APP_FOLDER;
+>>>>>>> 3dbe102e39099e877521e92d8f08ccfb1c01d04b
 
     private final MineBackup plugin;
 
@@ -44,7 +51,11 @@ public class DropBox {
 
     public boolean initialize(String key, String secret) {
         // And later in some initialization function:
+<<<<<<< HEAD
         appKeys = new AppKeyPair(plugin.config.dropboxAppKey, plugin.config.dropboxAppSecret);
+=======
+        appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
+>>>>>>> 3dbe102e39099e877521e92d8f08ccfb1c01d04b
 
         if((key == null || secret == null || key.equalsIgnoreCase(""))||(secret.equalsIgnoreCase(""))){
             requiresAuth = true;
