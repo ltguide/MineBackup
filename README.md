@@ -17,8 +17,11 @@ IMPORTANT!
 You need to include the new files in the classpath. the easiest way to do this is by running bukkit using the following:
 
 Windows:
+
 java  -classpath ".;.\*" org.bukkit.craftbukkit.Main
-Linuz/Mac:
+
+Linux/Mac:
+
 java  -classpath ".;./*" org.bukkit.craftbukkit.Main
 
 Start up the server with the plugin installed, then shut it down. Open the plugins/MineBackup/config.yml file, and add the key and secret obtained from the last step and put them into 
