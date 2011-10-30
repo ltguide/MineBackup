@@ -47,11 +47,8 @@ public class Config {
 	public int compressionLevel;
 
     public boolean dropboxEnabled;
-<<<<<<< HEAD
     public String dropboxAppKey;
     public String dropboxAppSecret;
-=======
->>>>>>> 3dbe102e39099e877521e92d8f08ccfb1c01d04b
     public String dropboxKey;
     public String dropboxSecret;
 	/* end configuration fields */
@@ -72,11 +69,8 @@ public class Config {
 
 			"compression.enabled", "compression.level", "compression.mode",
 
-<<<<<<< HEAD
             "dropbox.enabled", "dropbox.appkey", "dropbox.appsecret", "dropbox.key", "dropbox.secret" };
-=======
-            "dropbox.enabled", "dropbox.key", "dropbox.secret" };
->>>>>>> 3dbe102e39099e877521e92d8f08ccfb1c01d04b
+
 			
 			cfg = new Configuration(new File(plugin.getDataFolder() + "/config.yml"));
 			cfg.load();
@@ -179,11 +173,8 @@ public class Config {
             if(!dropboxEnabled) {
                 if(dropboxKey == null){
                     cfg.setProperty("dropbox.enabled",false);
-<<<<<<< HEAD
                     cfg.setProperty("dropbox.appkey","");
                     cfg.setProperty("dropbox.appsecret","");
-=======
->>>>>>> 3dbe102e39099e877521e92d8f08ccfb1c01d04b
                     cfg.setProperty("dropbox.key","");
                     cfg.setProperty("dropbox.secret","");
                     rewrite = true;
