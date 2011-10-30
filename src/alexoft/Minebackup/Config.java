@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.zip.Deflater;
 import java.util.zip.ZipOutputStream;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.util.config.Configuration;
+import uk.co.dbyz.dropbox.DropBox;
 
 @SuppressWarnings("deprecation")
 public class Config {
@@ -44,7 +46,12 @@ public class Config {
 	public boolean compressionEnabled;
 	public int compressionMode;
 	public int compressionLevel;
-	
+
+    public boolean dropboxEnabled;
+    public String dropboxAppKey;
+    public String dropboxAppSecret;
+    public String dropboxKey;
+    public String dropboxSecret;
 	/* end configuration fields */
 
 	public void loadConfig() {
@@ -61,7 +68,10 @@ public class Config {
 
 			"messages.backup-started", "messages.backup-started-user", "messages.backup-ended", "messages.enabled",
 
-			"compression.enabled", "compression.level", "compression.mode" };
+			"compression.enabled", "compression.level", "compression.mode",
+
+            "dropbox.enabled", "dropbox.appkey", "dropbox.appsecret", "dropbox.key", "dropbox.secret" };
+
 			
 			cfg = new Configuration(new File(plugin.getDataFolder() + "/config.yml"));
 			cfg.load();
@@ -90,6 +100,12 @@ public class Config {
 			
 			compressionLevel = Deflater.BEST_COMPRESSION;
 			compressionMode = ZipOutputStream.DEFLATED;
+
+            dropboxEnabled = cfg.getBoolean("dropbox.enabled", false);
+            dropboxKey = cfg.getString("dropbox.key",null);
+            dropboxSecret = cfg.getString("dropbox.secret",null);
+            dropboxAppKey = cfg.getString("dropbox.appkey",null);
+            dropboxAppSecret = cfg.getString("dropbox.appsecret",null);
 			
 			int i = 0;
 			String key;
@@ -156,22 +172,45 @@ public class Config {
 				cfg.setProperty("time.days-to-keep", firstDelay);
 				rewrite = true;
 			}
-			
-			interval *= 20;
+
+            if(!dropboxEnabled) {
+                if(dropboxKey == null){
+                    cfg.setProperty("dropbox.enabled",false);
+                    cfg.setProperty("dropbox.appkey","");
+                    cfg.setProperty("dropbox.appsecret","");
+                    cfg.setProperty("dropbox.key","");
+                    cfg.setProperty("dropbox.secret","");
+                    rewrite = true;
+                }
+            }else{
+                if(dropboxAppKey == null || dropboxAppSecret == null){
+                    this.dropboxEnabled = false;
+                    plugin.sendLog(Level.WARNING,"Couldn't find app key/secret");
+                }else{
+                    plugin.dropbox = new DropBox(plugin);
+                }
+            }
+
+            interval *= 20;
 			firstDelay *= 20;
-			if (rewrite) {
-				String headerText = "# available worlds :\r\n";
-				
-				for (World w : plugin.getServer().getWorlds()) {
-					headerText += "# - " + w.getName() + "\r\n";
-				}
-				cfg.setHeader(headerText);
-				cfg.save();
-			}
+			if (rewrite) rewrite();
 			plugin.sendLog(worlds.size() + " worlds loaded.");
 		}
 		catch (Exception e) {
 			plugin.logException(e, "Error while loading config");
 		}
 	}
+
+    public void rewrite(){
+                cfg.setProperty("dropbox.key",dropboxKey);
+                cfg.setProperty("dropbox.secret",dropboxSecret);
+
+         		String headerText = "# available worlds :\r\n";
+
+				for (World w : plugin.getServer().getWorlds()) {
+					headerText += "# - " + w.getName() + "\r\n";
+				}
+				cfg.setHeader(headerText);
+				cfg.save();
+    }
 }

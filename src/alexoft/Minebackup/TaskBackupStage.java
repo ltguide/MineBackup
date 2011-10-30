@@ -1,6 +1,7 @@
 package alexoft.Minebackup;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -105,6 +106,13 @@ public class TaskBackupStage extends Thread {
 	private void compressDir(File tempDir, File destFile) {
 		try {
 			ZipUtils.zipDir(tempDir, destFile, plugin.config.compressionMode, plugin.config.compressionLevel);
+            if(plugin.config.dropboxEnabled){
+                if(!plugin.dropbox.requiresAuth){
+                    FileInputStream fis = new FileInputStream(destFile);
+                    plugin.dropbox.uploadFile(fis, destFile.getPath().substring(plugin.config.bckDir.length()).replace("\\","/"), destFile.length());
+                    fis.close();
+                }
+            }
 		}
 		catch (Exception ex) {
 			plugin.sendLog("\t\\ failed");
