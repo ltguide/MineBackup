@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.java.JavaPlugin;
+import uk.co.dbyz.dropbox.DropBox;
 
 public class MineBackup extends JavaPlugin {
 	public Config config;
@@ -15,6 +16,8 @@ public class MineBackup extends JavaPlugin {
 	public boolean isBackupStarted;
 	public boolean isDirty;
 	public boolean shouldCleanBackups;
+
+    public DropBox dropbox;
 	
 	public void onDisable() {
 		getServer().getScheduler().cancelTasks(this);
